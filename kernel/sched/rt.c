@@ -2658,7 +2658,7 @@ static int tg_rt_schedulable(struct task_group *tg, void *data)
 	/*
 	 * Ensure we don't starve existing RT tasks if runtime turns zero.
 	 */
-	if (dl_bandwidth_enabled() && !runtime && tg_has_rt_tasks(tg))
+	if (tg == d->tg && dl_bandwidth_enabled() && !runtime && tg_has_rt_tasks(tg))
 		return -EBUSY;
 
 	total = to_ratio(period, runtime);
@@ -2675,7 +2675,7 @@ static int tg_rt_schedulable(struct task_group *tg, void *data)
 
 	if (tg == &root_task_group) {
 		rcu_read_lock_sched();
-		if (!dl_check_tg(total))
+		if (!(total))
 			return -EBUSY;
 		rcu_read_unlock_sched();
 	}
